@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ANIMETRIC — Anime Voting</title>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+:root{
+  --bg:#080a0b;
+  --ink:#f7f5ef;
+  --muted:#a4a9a2;
+  --line:rgba(255,255,255,.13);
+  --lime:#c8f169;
+  --orange:#ff8f5c;
+  --blue:#71c3ff;
+  --gold:#f5ce58;
+  --silver:#dbe3ea;
+  --bronze:#ce8958;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 15% 8%,rgba(200,241,105,.14),transparent 25%),
+    radial-gradient(circle at 85% 40%,rgba(113,195,255,.12),transparent 25%),
+    radial-gradient(circle at 45% 100%,rgba(255,143,92,.1),transparent 24%),
+    var(--bg);
+  font-family:"DM Sans",sans-serif;
+}
+
+.anime-bg{
+  position:fixed;
+  inset:0;
+  z-index:-10;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.anime-bg::before{
+  content:"アニメ 漫画 忍 魂 火 月 星 夢 侍 NARUTO ONE PIECE BLEACH JUJUTSU KAISEN DEMON SLAYER MY HERO ACADEMIA ATTACK ON TITAN DRAGON BALL Z DRAGON BALL SUPER TOKYO REVENGERS BLUE LOCK";
+  position:absolute;
+  inset:-30%;
+  color:rgba(255,255,255,.035);
+  font:700 40px/2.5 "Space Grotesk";
+  letter-spacing:18px;
+  word-spacing:30px;
+  transform:rotate(-12deg);
+  animation:animeTextMove 34s linear infinite;
+}
+
+.anime-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:linear-gradient(to bottom,#000,transparent 90%);
+}
+
+.energy{
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  filter:blur(55px);
+  opacity:.16;
+  animation:energyMove 12s ease-in-out infinite alternate;
+}
+
+.energy.one{
+  top:10%;
+  left:4%;
+  background:var(--lime);
+}
+
+.energy.two{
+  top:42%;
+  right:5%;
+  background:var(--blue);
+  animation-delay:-4s;
+}
+
+.energy.three{
+  bottom:-5%;
+  left:43%;
+  background:var(--orange);
+  animation-delay:-8s;
+}
+
+.spark{
+  position:absolute;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--lime);
+  box-shadow:0 0 18px var(--lime);
+  animation:sparkMove 7s ease-in-out infinite alternate;
+}
+
+.spark.a{left:18%;top:24%}
+.spark.b{left:75%;top:18%;animation-delay:-2s}
+.spark.c{left:60%;top:72%;animation-delay:-4s}
+.spark.d{left:30%;top:82%;animation-delay:-6s}
+
+@keyframes animeTextMove{
+  from{transform:rotate(-12deg) translateY(0)}
+  to{transform:rotate(-12deg) translateY(-320px)}
+}
+
+@keyframes energyMove{
+  to{transform:translate(90px,-55px) scale(1.3)}
+}
+
+@keyframes sparkMove{
+  to{
+    transform:translate(100px,-70px) scale(1.8);
+    opacity:.25;
+  }
+}
+
+.container{
+  width:min(1180px,calc(100% - 36px));
+  margin:auto;
+}
+
+.nav{
+  min-height:78px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:1px solid var(--line);
+}
+
+.brand{
+  font:700 22px "Space Grotesk";
+  letter-spacing:-.06em;
+}
+
+.brand span{color:var(--lime)}
+
+.navlinks{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.navlinks button{
+  border:0;
+  padding:0;
+  color:var(--muted);
+  background:transparent;
+  cursor:pointer;
+  font:500 13px "DM Sans";
+}
+
+.navlinks button:hover,
+.navlinks button.active{
+  color:var(--lime);
+}
+
+.feedback-nav-button{
+  color:var(--orange)!important;
+  border:1px solid rgba(255,143,92,.6)!important;
+  border-radius:8px!important;
+  padding:7px 11px!important;
+}
+
+.feedback-nav-button:hover{
+  color:#111!important;
+  background:var(--orange)!important;
+}
+
+.page{
+  display:none;
+  animation:pageAppear .35s ease;
+}
+
+.page.active{display:block}
+
+@keyframes pageAppear{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.hero{
+  padding:72px 0 48px;
+}
+
+.eyebrow{
+  color:var(--lime);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+.hero h1{
+  max-width:800px;
+  margin:18px 0 22px;
+  font:600 clamp(54px,8vw,105px)/.88 "Space Grotesk";
+  letter-spacing:-.08em;
+}
+
+.hero h1 em{
+  color:var(--orange);
+  font-style:normal;
+}
+
+.hero p,
+.muted{
+  max-width:720px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:20px;
+  padding:26px 0 18px;
+}
+
+.section-head h2{
+  margin:0;
+  font:500 34px "Space Grotesk";
+  letter-spacing:-.05em;
+}
+
+.toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:22px;
+}
+
+.search{
+  flex:1;
+  min-width:240px;
+}
+
+input,
+select,
+.button{
+  min-height:44px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  color:var(--ink);
+  background:rgba(255,255,255,.055);
+  font:inherit;
+}
+
+input{
+  width:100%;
+  padding:0 15px;
+  outline:none;
+}
+
+input:focus{
+  border-color:var(--lime);
+  box-shadow:0 0 0 3px rgba(200,241,105,.12);
+}
+
+select{
+  min-width:150px;
+  padding:0 13px;
+  background:#171a1b;
+}
+
+.button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 16px;
+  cursor:pointer;
+}
+
+.button.primary{
+  border-color:var(--lime);
+  color:#111;
+  background:var(--lime);
+  font-weight:700;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.card{
+  min-height:295px;
+  padding:12px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:linear-gradient(155deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+  transition:.25s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  border-color:var(--lime);
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+
+.anime-img{
+  display:block;
+  width:100%;
+  height:185px;
+  object-fit:cover;
+  border-radius:10px;
+  background:#202323;
+}
+
+.title{
+  min-height:40px;
+  margin:12px 0 8px;
+  font:600 15px/1.3 "Space Grotesk";
+}
+
+.tag{
+  display:inline-block;
+  padding:4px 7px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.vote{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border:1px solid rgba(200,241,105,.65);
+  border-radius:8px;
+  color:var(--lime);
+  background:rgba(200,241,105,.08);
+  cursor:pointer;
+  font-weight:700;
+}
+
+.vote:hover,
+.vote.voted{
+  color:#111;
+  background:var(--lime);
+}
+
+.vote small{
+  float:right;
+}
+
+.empty{
+  grid-column:1/-1;
+  padding:60px;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.ranking{
+  display:grid;
+  gap:10px;
+}
+
+.rank-row{
+  display:grid;
+  grid-template-columns:55px 82px 1fr auto;
+  align-items:center;
+  gap:16px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+}
+
+.rank-num{
+  color:var(--muted);
+  text-align:center;
+  font:700 30px "Space Grotesk";
+}
+
+.rank-img{
+  width:82px;
+  height:90px;
+  object-fit:cover;
+  border-radius:9px;
+  background:#222;
+}
+
+.rank-row:nth-child(1){
+  border-color:var(--gold);
+  background:rgba(245,206,88,.15);
+  box-shadow:0 0 32px rgba(245,206,88,.16);
+}
+
+.rank-row:nth-child(1) .rank-num{color:var(--gold)}
+
+.rank-row:nth-child(2){
+  border-color:var(--silver);
+  background:rgba(219,227,234,.1);
+}
+
+.rank-row:nth-child(2) .rank-num{color:var(--silver)}
+
+.rank-row:nth-child(3){
+  border-color:var(--bronze);
+  background:rgba(206,137,88,.12);
+}
+
+.rank-row:nth-child(3) .rank-num{color:var(--bronze)}
+
+.score{
+  color:var(--lime);
+  white-space:nowrap;
+  font:700 14px "Space Grotesk";
+}
+
+.bar{
+  height:6px;
+  margin-top:8px;
+  overflow:hidden;
+  border-radius:8px;
+  background:#343736;
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  border-radius:8px;
+  background:linear-gradient(90deg,var(--lime),var(--orange));
+}
+
+.arena-info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-bottom:18px;
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.05);
+}
+
+.arena-info strong{
+  display:block;
+  margin-top:6px;
+  font:600 21px "Space Grotesk";
+}
+
+.note{
+  margin-bottom:20px;
+  padding:14px 16px;
+  border-left:3px solid var(--lime);
+  color:var(--muted);
+  background:rgba(200,241,105,.07);
+}
+
+.arena-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.fighter{
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.045);
+}
+
+.fighter-img{
+  display:block;
+  width:100%;
+  height:190px;
+  object-fit:cover;
+  border-radius:9px;
+  background:#222;
+}
+
+.fighter .title{
+  min-height:55px;
+  font-size:13px;
+}
+
+.countdown{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.time-box{
+  min-width:74px;
+  padding:9px 8px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  text-align:center;
+  background:rgba(255,255,255,.06);
+}
+
+.time-box strong{
+  display:block;
+  color:var(--lime);
+  font:700 21px "Space Grotesk";
+}
+
+.time-box span{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+}
+
+footer{
+  margin-top:70px;
+  padding:25px 0 40px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px;
+}
+
+@media(max-width:950px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .arena-grid{grid-template-columns:repeat(4,1fr)}
+}
+
+@media(max-width:650px){
+  .container{width:calc(100% - 28px)}
+
+  .nav{
+    align-items:flex-start;
+    padding:18px 0;
+    flex-direction:column;
+  }
+
+  .navlinks{gap:10px}
+  .navlinks button{font-size:11px}
+
+  .grid,
+  .arena-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+  }
+
+  .anime-img{height:150px}
+
+  .arena-info{grid-template-columns:1fr}
+
+  .rank-row{
+    grid-template-columns:40px 58px 1fr;
+    gap:9px;
+  }
+
+  .rank-img{
+    width:58px;
+    height:70px;
+  }
+
+  .rank-row .score{grid-column:3}
+
+  .countdown{flex-wrap:wrap}
+  .time-box{min-width:62px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="anime-bg">
+  <div class="energy one"></div>
+  <div class="energy two"></div>
+  <div class="energy three"></div>
+  <div class="spark a"></div>
+  <div class="spark b"></div>
+  <div class="spark c"></div>
+  <div class="spark d"></div>
+</div>
+
+<main class="container">
+
+<header class="nav">
+  <div class="brand">ANIME<span>TRIC</span></div>
+
+  <nav class="navlinks">
+    <button data-page="votePage">Vote</button>
+    <button data-page="rankPage">Rankings</button>
+    <button data-page="arenaPage">Anime Arena</button>
+    <button id="feedback" class="feedback-nav-button">
+      Feedback
+    </button>
+  </nav>
+</header>
+
+<section id="votePage" class="page active">
+
+  <div class="hero">
+    <div class="eyebrow">Community anime index · season 01</div>
+
+    <h1>
+      Your taste.<br>
+      <em>On record.</em>
+    </h1>
+
+    <p>
+      Vote for your favourite anime and shape the main community ranking.
+      Anime Arena votes remain completely separate.
+    </p>
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2>Choose your canon.</h2>
+      <p class="muted">100+ famous anime titles</p>
+    </div>
+
+    <p id="count" class="muted"></p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <input id="search" placeholder="Search anime...">
+    </div>
+
+    <select id="type">
+      <option value="all">All titles</option>
+      <option value="series">Series</option>
+      <option value="film">Films</option>
+    </select>
+
+    <select id="sort">
+      <option value="featured">Featured order</option>
+      <option value="votes">Most voted</option>
+      <option value="az">A — Z</option>
+    </select>
+
+    <button class="button primary" id="goRank">
+      View Ranking →
+    </button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</section>
+
+<section id="rankPage" class="page">
+
+  <div class="hero">
+    <div class="eyebrow">Main vote ranking</div>
+
+    <h1>
+      The power<br>
+      <em>curve.</em>
+    </h1>
+
+    <p>
+      Only votes from the main Vote page appear here.
+    </p>
+  </div>
+
+  <div class="toolbar">
+    <button class="button primary" id="refresh">
+      Refresh Ranking
+    </button>
+
+    <button class="button" data-page="votePage">
+      ← Back to Vote
+    </button>
+  </div>
+
+  <div id="ranking" class="ranking"></div>
+</section>
+
+<section id="arenaPage" class="page">
+
+  <div class="hero">
+    <div class="eyebrow">Five-day tournament</div>
+
+    <h1>
+      Anime<br>
+      <em>Arena.</em>
+    </h1>
+
+    <p>
+      50 anime start in Stage 1. Each stage lasts five days.
+      The highest-voted anime advance until one winner remains.
+    </p>
+  </div>
+
+  <div id="arenaInfo" class="arena-info"></div>
+
+  <div class="note">
+    Arena votes are separate and never affect the main Rankings page.
+  </div>
+
+  <div class="section-head">
+    <div>
+      <h2 id="stageTitle"></h2>
+      <p id="stageDesc" class="muted"></p>
+      <div id="countdown" class="countdown"></div>
+    </div>
+  </div>
+
+  <div id="arenaGrid" class="arena-grid"></div>
+</section>
+
+<footer>
+  ANIMETRIC / community anime vote
+</footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL =
+  "https://emrcvtmhiyinzsjlltmr.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtcmN2dG1oaXlpbnpzamxsdG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwOTY5MDcsImV4cCI6MjEwNTY3MjkwN30.4wJIeuTq19uARnnREN9M7IarBH_obZB1s0_mPvhayzE";
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+const names = `
+Naruto|Naruto: Shippuden|One Piece|Bleach|Dragon Ball Z|Dragon Ball Super|Attack on Titan|Demon Slayer: Kimetsu no Yaiba|Jujutsu Kaisen|My Hero Academia|Hunter x Hunter|Fullmetal Alchemist: Brotherhood|Death Note|One Punch Man|Mob Psycho 100|Tokyo Ghoul|Tokyo Revengers|Black Clover|Fairy Tail|Sword Art Online|JoJo's Bizarre Adventure|Code Geass|Steins;Gate|Cowboy Bebop|Samurai Champloo|Neon Genesis Evangelion|Gurren Lagann|Vinland Saga|Monster|Berserk|Vagabond|Kingdom|Haikyuu!!|Blue Lock|Kuroko's Basketball|Slam Dunk|Hajime no Ippo|Yu Yu Hakusho|Rurouni Kenshin|Inuyasha|Dr. Stone|The Promised Neverland|Made in Abyss|Frieren: Beyond Journey's End|The Apothecary Diaries|Delicious in Dungeon|Re:Zero|Konosuba|Mushoku Tensei|That Time I Got Reincarnated as a Slime|Overlord|No Game No Life|The Rising of the Shield Hero|Classroom of the Elite|Oshi no Ko|Kaguya-sama: Love Is War|Toradora!|Clannad: After Story|Your Lie in April|Fruits Basket|Violet Evergarden|Anohana|A Silent Voice|Your Name|Weathering With You|I Want to Eat Your Pancreas|Josee, the Tiger and the Fish|Spirited Away|Howl's Moving Castle|Princess Mononoke|My Neighbor Totoro|Castle in the Sky|The Boy and the Heron|Perfect Blue|Paprika|Tokyo Godfathers|Akira|Ghost in the Shell|Cyberpunk: Edgerunners|Arcane|Castlevania|Pluto|Odd Taxi|Erased|Parasyte: The Maxim|Psycho-Pass|Serial Experiments Lain|86 Eighty-Six|Lycoris Recoil|Bocchi the Rock!|K-On!|Lucky Star|Nichijou|Nana|March Comes in Like a Lion|Natsume's Book of Friends|Mushishi|Hyouka|The Melancholy of Haruhi Suzumiya|Monogatari Series|Bakemonogatari|The Garden of Words|The Girl Who Leapt Through Time|Summer Wars|Redline|The First Slam Dunk|Look Back|Chainsaw Man|Gintama|Gintama: The Final|Sousou no Frieren|BLEACH: Thousand-Year Blood War
+`
+.split("|")
+.map(name => name.trim())
+.filter(Boolean);
+
+const stageLength =
+  5 * 24 * 60 * 60 * 1000;
+
+const getJSON = (key, fallback) => {
+  try {
+    return JSON.parse(
+      localStorage.getItem(key) ||
+      JSON.stringify(fallback)
+    );
+  } catch {
+    return fallback;
+  }
+};
+
+const imageFor = name =>
+  "https://tse1.mm.bing.net/th?q=" +
+  encodeURIComponent(name + " anime poster") +
+  "&w=600&h=900&c=7&rs=1&p=0";
+
+const titles = names.map((name,index) => ({
+  name,
+  index,
+  image:imageFor(name),
+  votes:0,
+  type:/movie|film|look back|perfect blue|spirited|howl|slam dunk|your name|weathering|garden|summer wars|redline/i.test(name)
+    ? "film"
+    : "series"
+}));
+
+const deviceMainVotes =
+  new Set(
+    getJSON("animetric-device-main-votes", [])
+  );
+
+const deviceArenaVotes =
+  new Set();
+
+let arenaStartTime = Date.now();
+let arenaStage = 1;
+let arenaPlayers = names.slice(0,50);
+let lastArenaStage = 0;
+
+function imageHTML(anime,className) {
+  const src =
+    anime?.image ||
+    imageFor(anime?.name || "anime");
+
+  return `
+    <img
+      class="${className}"
+      src="${src}"
+      alt="${anime?.name || "Anime"}"
+      loading="lazy"
+      onerror="this.onerror=null;this.src='${imageFor("anime poster")}'"
+    >
+  `;
+}
+
+function showPage(id) {
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+      page.classList.remove("active");
+    });
+
+  document
+    .getElementById(id)
+    .classList.add("active");
+
+  document
+    .querySelectorAll("[data-page]")
+    .forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.page === id
+      );
+    });
+
+  window.scrollTo(0,0);
+
+  if(id === "votePage") renderVote();
+  if(id === "rankPage") renderRank();
+  if(id === "arenaPage") renderArena();
+}
+
+document
+  .querySelectorAll("[data-page]")
+  .forEach(button => {
+    button.addEventListener("click",() => {
+      showPage(button.dataset.page);
+    });
+  });
+
+function renderVote() {
+  const query =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase();
+
+  const filter =
+    document.getElementById("type").value;
+
+  const sorting =
+    document.getElementById("sort").value;
+
+  let list =
+    titles.filter(anime => {
+      return (
+        (filter === "all" ||
+          anime.type === filter) &&
+        anime.name.toLowerCase().includes(query)
+      );
+    });
+
+  if(sorting === "votes"){
+    list.sort((a,b) => b.votes - a.votes);
+  }
+
+  if(sorting === "az"){
+    list.sort((a,b) =>
+      a.name.localeCompare(b.name)
+    );
+  }
+
+  document.getElementById("count").textContent =
+    `${list.length} titles`;
+
+  const grid =
+    document.getElementById("grid");
+
+  grid.innerHTML =
+    list.length
+      ? list.map(anime => `
+          <article class="card">
+            ${imageHTML(anime,"anime-img")}
+
+            <div class="title">
+              ${anime.name}
+            </div>
+
+            <span class="tag">
+              ${anime.type}
+            </span>
+
+            <button
+              class="vote ${
+                deviceMainVotes.has(anime.name)
+                  ? "voted"
+                  : ""
+              }"
+              data-main-vote="${encodeURIComponent(anime.name)}"
+            >
+              ${
+                deviceMainVotes.has(anime.name)
+                  ? "✓ Voted"
+                  : "＋ Vote"
+              }
+
+              <small>${anime.votes}</small>
+            </button>
+          </article>
+        `).join("")
+      : `<div class="empty">No anime found.</div>`;
+
+  grid
+    .querySelectorAll("[data-main-vote]")
+    .forEach(button => {
+      button.onclick = () => {
+        changeMainVote(
+          decodeURIComponent(
+            button.dataset.mainVote
+          )
+        );
+      };
+    });
+}
+
+async function loadMainVotes() {
+  const {data,error} =
+    await db
+      .from("anime_votes")
+      .select("anime_name,votes");
+
+  if(error){
+    console.error("Main votes:",error);
+    return;
+  }
+
+  titles.forEach(anime => {
+    anime.votes = 0;
+  });
+
+  (data || []).forEach(row => {
+    const anime =
+      titles.find(
+        item => item.name === row.anime_name
+      );
+
+    if(anime){
+      anime.votes =
+        Number(row.votes) || 0;
+    }
+  });
+
+  renderVote();
+  renderRank();
+}
+
+async function changeMainVote(name) {
+  const delta =
+    deviceMainVotes.has(name)
+      ? -1
+      : 1;
+
+  const {error} =
+    await db.rpc(
+      "change_main_vote",
+      {
+        p_anime_name:name,
+        p_delta:delta
+      }
+    );
+
+  if(error){
+    console.error("Vote update:",error);
+    alert("Vote could not be saved.");
+    return;
+  }
+
+  if(delta === 1){
+    deviceMainVotes.add(name);
+  }else{
+    deviceMainVotes.delete(name);
+  }
+
+  localStorage.setItem(
+    "animetric-device-main-votes",
+    JSON.stringify([...deviceMainVotes])
+  );
+
+  await loadMainVotes();
+}
+
+function renderRank() {
+  const list =
+    [...titles].sort((a,b) => {
+      if(b.votes !== a.votes){
+        return b.votes - a.votes;
+      }
+
+      return a.index - b.index;
+    });
+
+  const max =
+    Math.max(list[0]?.votes || 0,1);
+
+  document.getElementById("ranking").innerHTML =
+    list.map((anime,index) => `
+      <div class="rank-row">
+        <div class="rank-num">
+          ${index + 1}
+        </div>
+
+        ${imageHTML(anime,"rank-img")}
+
+        <div>
+          <div class="title">
+            ${anime.name}
+          </div>
+
+          <div class="bar">
+            <i style="width:${anime.votes / max * 100}%"></i>
+          </div>
+        </div>
+
+        <div class="score">
+          ${anime.votes} votes
+        </div>
+      </div>
+    `).join("");
+}
+
+async function loadArenaSettings() {
+  const {data,error} =
+    await db
+      .from("arena_settings")
+      .select("start_time,current_stage")
+      .eq("id",1)
+      .single();
+
+  if(error){
+    console.error("Arena settings:",error);
+    return false;
+  }
+
+  arenaStartTime =
+    new Date(data.start_time).getTime();
+
+  const calculated =
+    Math.floor(
+      (Date.now() - arenaStartTime) /
+      stageLength
+    ) + 1;
+
+  arenaStage =
+    Math.min(
+      totalStages(),
+      Math.max(
+        Number(data.current_stage) || 1,
+        calculated
+      )
+    );
+
+  return true;
+}
+
+function totalStages() {
+  let count = 50;
+  let stages = 1;
+
+  while(count > 1){
+    count = Math.ceil(count / 2);
+    stages++;
+  }
+
+  return stages;
+}
+
+async function loadArenaVotes(stage) {
+  const {data,error} =
+    await db
+      .from("arena_votes")
+      .select("anime_name,votes")
+      .eq("stage",stage);
+
+  if(error){
+    console.error("Arena votes:",error);
+    return {};
+  }
+
+  return Object.fromEntries(
+    (data || []).map(row => [
+      row.anime_name,
+      Number(row.votes) || 0
+    ])
+  );
+}
+
+async function rebuildArenaPlayers() {
+  arenaPlayers =
+    names.slice(0,50);
+
+  for(
+    let stage = 1;
+    stage < arenaStage;
+    stage++
+  ){
+    const votes =
+      await loadArenaVotes(stage);
+
+    arenaPlayers =
+      arenaPlayers
+        .map(name => ({
+          name,
+          votes:votes[name] || 0
+        }))
+        .sort((a,b) =>
+          b.votes - a.votes ||
+          names.indexOf(a.name) -
+          names.indexOf(b.name)
+        )
+        .slice(
+          0,
+          Math.ceil(arenaPlayers.length / 2)
+        )
+        .map(item => item.name);
+  }
+}
+
+function formatCountdown(milliseconds) {
+  const total =
+    Math.max(
+      0,
+      Math.floor(milliseconds / 1000)
+    );
+
+  return {
+    days:Math.floor(total / 86400),
+    hours:Math.floor(total % 86400 / 3600),
+    minutes:Math.floor(total % 3600 / 60),
+    seconds:total % 60
+  };
+}
+
+function renderCountdown() {
+  const element =
+    document.getElementById("countdown");
+
+  if(!element){
+    return;
+  }
+
+  const time =
+    formatCountdown(
+      Math.max(
+        0,
+        arenaStartTime +
+        arenaStage * stageLength -
+        Date.now()
+      )
+    );
+
+  element.innerHTML = `
+    <div class="time-box">
+      <strong>${String(time.days).padStart(2,"0")}</strong>
+      <span>Days</span>
+    </div>
+
+    <div class="time-box">
+      <strong>${String(time.hours).padStart(2,"0")}</strong>
+      <span>Hours</span>
+    </div>
+
+    <div class="time-box">
+      <strong>${String(time.minutes).padStart(2,"0")}</strong>
+      <span>Minutes</span>
+    </div>
+
+    <div class="time-box">
+      <strong>${String(time.seconds).padStart(2,"0")}</strong>
+      <span>Seconds</span>
+    </div>
+  `;
+}
+
+async function renderArena() {
+  const settingsLoaded =
+    await loadArenaSettings();
+
+  if(!settingsLoaded){
+    return;
+  }
+
+  if(lastArenaStage !== arenaStage){
+    await rebuildArenaPlayers();
+    lastArenaStage = arenaStage;
+    deviceArenaVotes.clear();
+  }
+
+  const votes =
+    await loadArenaVotes(arenaStage);
+
+  const remaining =
+    Math.max(
+      0,
+      arenaStartTime +
+      arenaStage * stageLength -
+      Date.now()
+    );
+
+  const time =
+    formatCountdown(remaining);
+
+  document.getElementById("arenaInfo").innerHTML = `
+    <div>
+      <div class="eyebrow">Current stage</div>
+      <strong>${arenaStage} / ${totalStages()}</strong>
+    </div>
+
+    <div>
+      <div class="eyebrow">Anime remaining</div>
+      <strong>${arenaPlayers.length}</strong>
+    </div>
+
+    <div>
+      <div class="eyebrow">Stage status</div>
+      <strong>${time.days}d ${time.hours}h remaining</strong>
+    </div>
+  `;
+
+  document.getElementById("stageTitle").textContent =
+    arenaPlayers.length === 1
+      ? "🏆 Arena Winner"
+      : `Stage ${arenaStage} contenders`;
+
+  document.getElementById("stageDesc").textContent =
+    arenaPlayers.length === 1
+      ? `${arenaPlayers[0]} is the final winner.`
+      : "Vote before this five-day stage ends.";
+
+  renderCountdown();
+
+  const grid =
+    document.getElementById("arenaGrid");
+
+  grid.innerHTML =
+    arenaPlayers.map(name => {
+      const anime =
+        titles.find(item => item.name === name);
+
+      if(!anime){
+        return "";
+      }
+
+      const voted =
+        deviceArenaVotes.has(name);
+
+      return `
+        <article class="fighter">
+          ${imageHTML(anime,"fighter-img")}
+
+          <div class="title">
+            ${anime.name}
+          </div>
+
+          <span class="tag">
+            ${votes[name] || 0} arena votes
+          </span>
+
+          ${
+            arenaPlayers.length === 1
+              ? `<div class="score">WINNER</div>`
+              : `
+                <button
+                  class="vote ${voted ? "voted" : ""}"
+                  data-arena-vote="${encodeURIComponent(anime.name)}"
+                >
+                  ${
+                    voted
+                      ? "✓ Arena voted"
+                      : "＋ Arena vote"
+                  }
+
+                  <small>${votes[name] || 0}</small>
+                </button>
+              `
+          }
+        </article>
+      `;
+    }).join("");
+
+  grid
+    .querySelectorAll("[data-arena-vote]")
+    .forEach(button => {
+      button.onclick = () => {
+        changeArenaVote(
+          decodeURIComponent(
+            button.dataset.arenaVote
+          )
+        );
+      };
+    });
+}
+
+async function changeArenaVote(name) {
+  const delta =
+    deviceArenaVotes.has(name)
+      ? -1
+      : 1;
+
+  const {error} =
+    await db.rpc(
+      "change_arena_vote",
+      {
+        p_stage:arenaStage,
+        p_anime_name:name,
+        p_delta:delta
+      }
+    );
+
+  if(error){
+    console.error("Arena vote update:",error);
+    alert("Arena vote could not be saved.");
+    return;
+  }
+
+  if(delta === 1){
+    deviceArenaVotes.add(name);
+  }else{
+    deviceArenaVotes.delete(name);
+  }
+
+  await renderArena();
+}
+
+/* Formspree feedback */
+document
+  .getElementById("feedback")
+  .onclick = () => {
+    Swal.fire({
+      title:"Give Feedback",
+      background:"#151819",
+      color:"#f7f5ef",
+      showConfirmButton:false,
+      showCloseButton:true,
+      html:`
+        <form
+          id="feedbackForm"
+          action="https://formspree.io/f/mnpndwky"
+          method="POST"
+        >
+          <label>Your email:</label>
+
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="your@email.com"
+            style="width:100%;padding:12px;margin:8px 0 14px"
+          >
+
+          <label>Your message:</label>
+
+          <textarea
+            name="message"
+            required
+            placeholder="Write your feedback..."
+            style="width:100%;min-height:110px;padding:12px;margin-top:8px"
+          ></textarea>
+
+          <button
+            type="submit"
+            style="
+              width:100%;
+              margin-top:14px;
+              padding:12px;
+              border:0;
+              border-radius:8px;
+              background:#c8f169;
+              font-weight:700;
+            "
+          >
+            Send Feedback
+          </button>
+        </form>
+      `,
+      didOpen:() => {
+        const form =
+          document.getElementById("feedbackForm");
+
+        form.onsubmit = async event => {
+          event.preventDefault();
+
+          const button =
+            form.querySelector("button");
+
+          button.disabled = true;
+          button.textContent = "Sending...";
+
+          try{
+            const response =
+              await fetch(form.action,{
+                method:"POST",
+                body:new FormData(form),
+                headers:{
+                  Accept:"application/json"
+                }
+              });
+
+            if(!response.ok){
+              throw new Error("Submission failed");
+            }
+
+            Swal.fire({
+              title:"Thank you!",
+              text:"Your feedback was sent successfully.",
+              icon:"success",
+              background:"#151819",
+              color:"#f7f5ef",
+              confirmButtonColor:"#c8f169"
+            });
+          }catch{
+            button.disabled = false;
+            button.textContent = "Send Feedback";
+
+            Swal.fire({
+              title:"Error",
+              text:"Your feedback could not be sent.",
+              icon:"error",
+              background:"#151819",
+              color:"#f7f5ef"
+            });
+          }
+        };
+      }
+    });
+  };
+
+document
+  .getElementById("search")
+  .oninput = renderVote;
+
+document
+  .getElementById("type")
+  .onchange = renderVote;
+
+document
+  .getElementById("sort")
+  .onchange = renderVote;
+
+document
+  .getElementById("goRank")
+  .onclick = () => {
+    showPage("rankPage");
+  };
+
+document
+  .getElementById("refresh")
+  .onclick = renderRank;
+
+renderVote();
+renderRank();
+loadMainVotes();
+renderArena();
+
+setInterval(() => {
+  loadMainVotes();
+},10000);
+
+setInterval(() => {
+  renderArena();
+},1000);
+</script>
+
+</body>
+</html>
